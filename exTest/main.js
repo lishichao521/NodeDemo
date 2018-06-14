@@ -19,41 +19,23 @@ app.all('*', function (req, res, next) {
     res.header("X-Powered-By", ' 3.2.1');
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
-    // app.get("/", function (req1, res1) {
-    //     res1.end('sssss')
-    // })
 });
 // 接口
+app.get('*', function (req, res) {
+    // console.log(link.cc())
+    // console.log(req.headers)
+    // console.log(req.query)
+    var getRequest = link.getRequest(req.query, function (statusCode, Data) {
+        res.status(statusCode);
+        res.json(JSON.parse(Data))
+    })
+});
 app.post('*', function (req, res) {
     // console.log(link.cc())
-    let DATA = link.query_site_name()
-    DATA.on('error', (e) => {
-        console.error(`请求遇到问题: ${e.message}`);
-    });
-    // JSON.stringify(D)
-    DATA.write("doMain:'' ");
-    DATA.end();
-    // res.status(DATA.statusCode);
-        res.status(200);
-        res.json({ code: 333, msg: '账号或密码错误' })
-    console.log(DATA.body)
-    // let r = req.body
-    // let isY = false
-    // for (let i = 0; i < D.length; i++) {
-    //     if (r.name === D[i].name && r.pw === D[i].pw) {
-    //         isY = true;
-    //         break;
-    //     } else {
-    //         isY = false;
-    //     }
-    // }
-    // if (isY) {
-    //     res.status(200);
-    //     res.json({ code: 0, msg: '登录成功' })
-    // } else {
-    //     res.status(200);
-    //     res.json({ code: 333, msg: '账号或密码错误' })
-    // }
+    var PostRequest = link.PostRequest(req.body, function (statusCode, Data) {
+        res.status(statusCode);
+        res.json(JSON.parse(Data))
+    })
 });
 // 服务端口
 var server = app.listen(3000, function () {
