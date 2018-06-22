@@ -26,7 +26,7 @@ app.use(async (ctx) => {
         await postReq(ctx.request.body, ctx.url)
         ctx.body = postD
     } else if (ctx.method === "GET") {
-        await getReq(ctx.request.body, ctx.url)
+        await getReq(ctx.query, ctx.url)
         ctx.body = getD
     }
 })
