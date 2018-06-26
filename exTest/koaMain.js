@@ -23,6 +23,7 @@ async function getReq(data, url) {
 }
 app.use(async (ctx) => {
     if (ctx.method === "POST") {
+        console.log(222222,ctx.request.body)
         await postReq(ctx.request.body, ctx.url)
         ctx.body = postD
     } else if (ctx.method === "GET") {
@@ -54,6 +55,6 @@ app.use(async (ctx) => {
 //     }
 // })
 
-app.listen(3001, () => {
+app.listen(3002, (req, res) => {
     //   console.log('[demo] request get is starting at port 3000')
 })
