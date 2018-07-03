@@ -1,34 +1,20 @@
 const Koa = require('koa')
 const router = require('koa-router')();
-const link = require("./middleware/logger-generator.js")
+const link = require("./req/req")
 const cors = require('koa2-cors');
 var bodyParser = require('koa-bodyparser');
 const app = new Koa()
 app.use(cors())
 app.use(bodyParser())
 app.use(router.routes());
-let postD = ''
-let getD = ''
-async function postReq(data, url) {
-    await link.PostRequest(data, url)
-        .then(res => {
-            postD = res
-        })
-}
-async function getReq(data, url) {
-    await link.GetRequest(data, url)
-        .then(res => {
-            getD = res
-        })
-}
+
 app.use(async (ctx) => {
     if (ctx.method === "POST") {
-        console.log(222222,ctx.request.body)
-        await postReq(ctx.request.body, ctx.url)
-        ctx.body = postD
+        let POST_D = await link.PostRequest(ctx.request.body, ctx.url)
+        ctx.body = POST_D
     } else if (ctx.method === "GET") {
-        await getReq(ctx.query, ctx.url)
-        ctx.body = getD
+        let GET_D = await link.GetRequest(ctx.query, ctx.url)
+        ctx.body = GET_D
     }
 })
 

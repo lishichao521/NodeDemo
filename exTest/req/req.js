@@ -13,7 +13,10 @@ let PostRequest = (D, url) => {
         return res.data
       }
     }
-  )
+  ).catch((err) => {
+    console.log('123', err)
+    return err
+  })
 }
 let GetRequest = (D, url) => {
   axios.defaults.baseURL = 'https://m.toutiao.com'
@@ -25,7 +28,10 @@ let GetRequest = (D, url) => {
         return res.data
       }
     }
-  )
+  ).catch((err) => {
+    console.log('456', err)
+    return err
+  })
 }
 exports.PostRequest = PostRequest;
 exports.GetRequest = GetRequest;
