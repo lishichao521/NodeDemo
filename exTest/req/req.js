@@ -10,6 +10,7 @@ let PostRequest = (D, url) => {
   return axios.post(url, D).then(
     (res) => {
       if (res.status === 200) {
+        console.log(1,'ok')
         return res.data
       }
     }
@@ -25,6 +26,7 @@ let GetRequest = (D, url) => {
   return axios.get(url, { params: { D } }).then(
     (res) => {
       if (res.status === 200) {
+        console.log(2,'ok')
         return res.data
       }
     }
