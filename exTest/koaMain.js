@@ -3,6 +3,7 @@ const router = require("koa-router")();
 const link = require("./req/req");
 const cors = require("koa2-cors");
 var bodyParser = require("koa-bodyparser");
+var fs = require("fs");
 const app = new Koa();
 app.use(cors());
 app.use(bodyParser());
@@ -19,10 +20,34 @@ app.use(async ctx => {
 });
 var server = require("http").Server(app.callback());
 var io = require("socket.io")(server);
+let userId = [];
+let userIdNum = 0;
+let name = "";
 io.on("connection", function(socket) {
-  socket.emit("news", { hello: "world" });
-  socket.on("my other event", function(data) {
-    console.log(data);
+  io.sockets.emit("updatePerson", { userNumber: io.sockets.server.eio.clientsCount });
+  socket.emit("chatInfo", { is: "ok" });
+  // 监听客户端发来的消息
+  socket.on("sendInfo", function(data) {
+    io.sockets.emit("chatInfo", { data: data });
+  });
+  // // 获取在线人数
+  // socket.on("setUserNumber", function(data) {
+  //   name = data;
+  //   if (!userId.includes(data)) {
+  //     userId.push(data);
+  //   }
+  //   console.log("a");
+  // });
+  //客户端断开连接
+  socket.on("disconnect", function(socket) {
+    for (let i = 0; i < userId.length; i++) {
+      if (userId[i] == name) {
+        userId.splice(i, 1);
+        break;
+      }
+    }
+    console.log("b");
+    io.sockets.emit("updatePerson", { userNumber: io.sockets.server.eio.clientsCount });
   });
 });
 server.listen(1337, "192.168.10.12");
@@ -50,6 +75,5 @@ server.listen(1337, "192.168.10.12");
 // })
 
 // app.listen(3002, (req, res) => {
-//     //   console.log('[demo] request get is starting at port 3000')
 // })
 app.listen(80, "192.168.10.12");
