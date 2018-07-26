@@ -1,8 +1,8 @@
 let axios = require('axios')
 let qs = require('querystring')
 // axios.defaults.baseURL = 'http://10.163.126.142:8080/user'
-axios.defaults.baseURL = 'https://m.zhixianyun.com/api'
-// axios.defaults.baseURL = 'http://1.zhixianren.com/api'
+// axios.defaults.baseURL = 'https://m.zhixianyun.com/api'
+axios.defaults.baseURL = 'http://1.zhixianren.com/api'
 // axios.defaults.baseURL = 'http://192.168.1.16:8080/user'
 let PostRequest = (D, url) => {
   D = qs.stringify(D)

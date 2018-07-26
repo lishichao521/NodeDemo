@@ -24,6 +24,7 @@ let userId = [];
 let userIdNum = 0;
 let name = "";
 io.on("connection", function(socket) {
+  console.log('aaa')
   io.sockets.emit("updatePerson", { userNumber: io.sockets.server.eio.clientsCount });
   socket.emit("chatInfo", { is: "ok" });
   // 监听客户端发来的消息
