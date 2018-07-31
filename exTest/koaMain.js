@@ -20,35 +20,29 @@ app.use(async ctx => {
 });
 var server = require("http").Server(app.callback());
 var io = require("socket.io")(server);
-let userId = [];
-let userIdNum = 0;
-let name = "";
+let infoData = [];
 io.on("connection", function(socket) {
-  console.log('aaa')
-  io.sockets.emit("updatePerson", { userNumber: io.sockets.server.eio.clientsCount });
-  socket.emit("chatInfo", { is: "ok" });
+  io.sockets.emit("updatePerson", {
+    userNumber: io.sockets.server.eio.clientsCount
+  });
+  console.log(111,infoData);
+  socket.emit("chatInfo", { is: "ok", data: infoData });
   // 监听客户端发来的消息
   socket.on("sendInfo", function(data) {
+    if (infoData.length === 100) {
+      infoData.shift();
+    }
+    infoData.push(data);
+    console.log(111,data)
+    console.log(333,infoData)
     io.sockets.emit("chatInfo", { data: data });
   });
-  // // 获取在线人数
-  // socket.on("setUserNumber", function(data) {
-  //   name = data;
-  //   if (!userId.includes(data)) {
-  //     userId.push(data);
-  //   }
-  //   console.log("a");
-  // });
   //客户端断开连接
   socket.on("disconnect", function(socket) {
-    for (let i = 0; i < userId.length; i++) {
-      if (userId[i] == name) {
-        userId.splice(i, 1);
-        break;
-      }
-    }
     console.log("b");
-    io.sockets.emit("updatePerson", { userNumber: io.sockets.server.eio.clientsCount });
+    io.sockets.emit("updatePerson", {
+      userNumber: io.sockets.server.eio.clientsCount
+    });
   });
 });
 server.listen(1337, "192.168.10.12");
