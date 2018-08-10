@@ -14,6 +14,7 @@ app.use(async ctx => {
     let POST_D = await link.PostRequest(ctx.request.body, ctx.url);
     ctx.body = POST_D;
   } else if (ctx.method === "GET") {
+    console.log(222,ctx.query, ctx.url)
     let GET_D = await link.GetRequest(ctx.query, ctx.url);
     ctx.body = GET_D;
   }
@@ -45,6 +46,14 @@ io.on("connection", function(socket) {
     });
   });
 });
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://192.168.10.12:8080/runoob";
+ 
+// MongoClient.connect(url, function(err, db) {
+//   if (err) throw err;
+//   console.log("数据库已创建!");
+//   db.close();
+// });
 server.listen(1337, "192.168.10.12");
 // router.post('/org/query_site_name', async (ctx) => {
 //     await postReq(ctx.request.body, ctx.url)
