@@ -11,35 +11,35 @@ app.use(cors());
 app.use(
   koaBody({
     multipart: true, // 支持文件上传
-    encoding: "gzip",
+    encoding: "utf-8",
     formidable: {
       uploadDir: path.join(__dirname, "upload/"), // 设置文件上传目录
       keepExtensions: true, // 保持文件的后缀
-      maxFieldsSize: 2 * 1024 * 1024, // 文件上传大小
+      maxFileSize: 2 * 1024 * 1024, // 文件上传大小
       onFileBegin: (name, file) => {
         // 文件上传前的设置
-        // console.log(`name: ${name}`);
-        // console.log(file);
+        file.path = "upload/" + file.name; //修改文件名字
+        console.log(`name: ${name}`);
+      },
+      onError:(err)=>{
+        ctx.body = {
+          code: 233,
+          msg: "文件过大"
+        };
+        console.log(111, err);
       }
     }
   })
 );
 app.use(router.routes());
-
 app.use(async ctx => {
   if (ctx.method === "POST") {
     if (ctx.url === "/uploadfile") {
-      // 上传单个文件
-      console.log(222, ctx.request.files);
-      // const file = ctx.request.files.file; // 获取上传文件
-      // // 创建可读流
-      // const reader = fs.createReadStream(file.path);
-      // let filePath = path.join(__dirname, "public/upload/") + `/${file.name}`;
-      // // 创建可写流
-      // const upStream = fs.createWriteStream(filePath);
-      // // 可读流通过管道写入可写流
-      // reader.pipe(upStream);
-      ctx.body = { code: 0,url: ctx.request.files.file.path, msg: "上传成功！" };
+      ctx.body = {
+        code: 0,
+        url: ctx.request.files.file.path,
+        msg: "上传成功！"
+      };
       // return (ctx.body = "上传成功！");
     } else if (ctx.url === "/uploadfiles") {
       // 上传多个文件
@@ -122,4 +122,4 @@ server.listen(1337, "0.0.0.0");
 
 // app.listen(3002, (req, res) => {
 // })
-app.listen(80, "0.0.0.0");
+app.listen(8085, "0.0.0.0");
