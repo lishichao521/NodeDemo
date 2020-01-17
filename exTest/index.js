@@ -62,27 +62,36 @@ io.on("connection", function(socket) {
   io.sockets.emit("updatePerson", {
     userNumber: io.sockets.server.eio.clientsCount
   });
-  console.log(111, infoData);
-  socket.emit("chatInfo", { is: "ok", data: infoData });
+  console.log("链接")
+//   console.log(222, infoData);
+//   socket.emit("chatInfo", { is: "ok", data: infoData });
+//   // 监听客户端发来的消息
+//   socket.on("sendInfo", function(data) {
+//     if (infoData.length === 100) {
+//       infoData.shift();
+//     }
+//     infoData.push(data);
+//     console.log(333, infoData);
+//     io.sockets.emit("chatInfo", { data: data });
+//   });
   // 监听客户端发来的消息
-  socket.on("sendInfo", function(data) {
-    if (infoData.length === 100) {
-      infoData.shift();
-    }
-    infoData.push(data);
+  socket.on("stream", function(data) {
     console.log(111, data);
-    console.log(333, infoData);
-    io.sockets.emit("chatInfo", { data: data });
+    setTimeout(() => {
+        io.sockets.emit("sendVideo", { data: data });
+    }, 10000);
+    // io.sockets.emit("chatInfo", { data: data });
   });
   //客户端断开连接
   socket.on("disconnect", function(socket) {
-    console.log("b");
-    io.sockets.emit("updatePerson", {
-      userNumber: io.sockets.server.eio.clientsCount
-    });
+    console.log("断开");
+    // io.sockets.emit("updatePerson", {
+    //   userNumber: io.sockets.server.eio.clientsCount
+    // });
   });
 });
-server.listen(1337, "0.0.0.0");
+
+server.listen(1337, "192.168.0.184");
 // 聊天消息
 
 // router.post('/org/query_site_name', async (ctx) => {
@@ -110,4 +119,4 @@ server.listen(1337, "0.0.0.0");
 
 // app.listen(3002, (req, res) => {
 // })
-app.listen(8085, "0.0.0.0");
+app.listen(8085, "192.168.0.184");
