@@ -58,43 +58,57 @@ var server = require("http").Server(app.callback());
 var io = require("socket.io")(server);
 let infoData = [];
 let userList = []; //客户端链接id
-io.on("connection", function(socket) {
-    io.sockets.emit("updatePerson", {
-        userNumber: io.sockets.server.eio.clientsCount
+let videoData = [];
+let anchor = []; //视频主播id
+io.on("connection", socket => {
+    // 发送链接者的id
+    socket.emit("socketId", { data: socket.id });
+    // 存储视频主播id
+    socket.on("anchor", id => {
+        anchor[0] = id;
+        console.log(anchor[0], "anchor")
     });
-    // let arrUser = Object.values(io.eio.clients)[0];
-    // console.log("链接", Object.values(io.eio.clients)[0].id, io.eio.clientsCount);
-    // this.userList = Object.keys(io.eio.clients)
-    userList.push(socket.id)
-    console.log("aaaaaaaaaa", userList)
-    //   console.log(222, infoData);
-    //   socket.emit("chatInfo", { is: "ok", data: infoData });
-    //   // 监听客户端发来的消息
-    //   socket.on("sendInfo", function(data) {
-    //     if (infoData.length === 100) {
-    //       infoData.shift();
-    //     }
-    //     infoData.push(data);
-    //     console.log(333, infoData);
-    //     io.sockets.emit("chatInfo", { data: data });
-    //   });
-    //返回连接者
-    // console.log(io.sockets)
-    // let userMsg = io
-    // io.sockets.emit("isUser", {
-    //     user: userMsg
-    // });
+    // 存储所有连接着id
+    userList = Object.keys(socket.adapter.rooms);
+    console.log("链接", userList);
+    let isOne = true;
+    for (k = 0; k < videoData.length; k++) {
+        socket
+            .to(socket.id)
+            .emit("sendVideo", { data: videoData[k] });
+    }
     // 监听客户端发来的消息
-    socket.on("stream", function(data) {
-        console.log(111, data);
-        setTimeout(() => {
-            io.sockets.emit("sendVideo", { data: data });
-        }, 10000);
-        // io.sockets.emit("chatInfo", { data: data });
+    socket.on("videoStreaming", data => {
+        // if (videoData.length === 0) {
+        //     videoData.push(data);
+        // }
+        // videoData[1] = data;
+        videoData.push(data);
+        // console.log(111, videoData[1]);
+        for (let i = 0; i < userList.length; i++) {
+            if (userList[i] !== anchor[0]) {
+                if (isOne) {
+                    for (k = 0; k < videoData.length; k++) {
+                        socket
+                            .to(userList[i])
+                            .emit("sendVideo", { data: videoData[k] });
+                    }
+                    console.log(anchor[0], 11111);
+                    isOne = false;
+                } else {
+                    console.log(isOne, 2222);
+                    socket.to(userList[i]).emit("sendVideo", { data: data });
+                }
+            }
+        }
+        // for (k = 0; k < videoData.length; k++) {
+        //     socket.to(userList[i]).emit("sendVideo", { data: videoData[k] });
+        // }
     });
+
     //客户端断开连接
-    socket.on("disconnect", function(socket) {
-        console.log("断开");
+    socket.on("disconnecting", function(socket) {
+        console.log("断开", socket);
         // io.sockets.emit("updatePerson", {
         //   userNumber: io.sockets.server.eio.clientsCount
         // });
