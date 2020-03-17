@@ -60,22 +60,31 @@ let infoData = [];
 let userList = []; //客户端链接id
 let videoData = [];
 let anchor = []; //视频主播id
+
+// var ws = fs.createWriteStream("./video2.mov"); //创建读取流
+// rs.on("data", function(chunc) {
+//     console.log(chunc);
+//     ws.write(chunc)
+// });
+// rs.on("end", function() {
+//     console.log("没有数据了");
+//     ws.end()
+// });
+
 io.on("connection", socket => {
     // 发送链接者的id
     socket.emit("socketId", { data: socket.id });
     // 存储视频主播id
     socket.on("anchor", id => {
         anchor[0] = id;
-        console.log(anchor[0], "anchor")
+        console.log(anchor[0], "anchor");
     });
     // 存储所有连接着id
     userList = Object.keys(socket.adapter.rooms);
     console.log("链接", userList);
     let isOne = true;
     for (k = 0; k < videoData.length; k++) {
-        socket
-            .to(socket.id)
-            .emit("sendVideo", { data: videoData[k] });
+        socket.to(socket.id).emit("sendVideo", { data: videoData[k] });
     }
     // 监听客户端发来的消息
     socket.on("videoStreaming", data => {
